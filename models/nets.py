@@ -101,6 +101,45 @@ class Discriminator(Module):
 
         return self.net(sa)
 
+class AE(Module):
+    def __init__(self, state_dim, action_dim, discrete) -> None:
+        super().__init__()
+
+        self.state_dim = state_dim
+        self.action_dim = action_dim
+        self.discrete = discrete
+
+        if self.discrete:
+            self.act_emb = Embedding(
+                action_dim, state_dim
+            )
+            self.net_in_dim = 2 * state_dim
+        else:
+            self.net_in_dim = state_dim + action_dim
+
+        self.net = Sequential(
+            Linear(self.net_in_dim, 50),
+            Tanh(),
+            Linear(50, 50),
+            Tanh(),
+            Linear(50, 50),
+            Tanh(),
+            Linear(50, self.net_in_dim),
+        )
+
+    def forward(self, states, actions):
+        return torch.sigmoid(self.get_logits(states, actions))
+
+    def get_logits(self, states, actions):
+        if self.discrete:
+            actions = self.act_emb(actions.long())
+
+        sa = torch.cat([states, actions], dim=-1)
+        sa_saved = torch.clone(sa)
+        forward_ = self.net(sa)
+
+
+        return  torch.sum((forward_ - sa_saved)**2, axis = 1)
 
 class Expert(Module):
     def __init__(
