@@ -122,7 +122,7 @@ class AE(Module):
             Tanh(),
             Linear(100, 100),
             Tanh(),
-            Linear(100, self.net_in_dim),
+            Linear(100, self.net_in_dim)
 
     def forward(self, states, actions):
         return torch.sigmoid(self.get_logits(states, actions))
