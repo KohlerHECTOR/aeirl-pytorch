@@ -22,10 +22,11 @@ class GAIL(Module):
         state_dim,
         action_dim,
         discrete,
-        train_config=None
+        train_config=None,
+        path_save_log="default_save"
     ) -> None:
         super().__init__()
-
+        self.path_save_log=path_save_log
         self.state_dim = state_dim
         self.action_dim = action_dim
         self.discrete = discrete
@@ -67,7 +68,7 @@ class GAIL(Module):
 
                 if done:
                     break
-                
+
             eval += reward
         return eval/nb_eval
         
@@ -88,13 +89,10 @@ class GAIL(Module):
         env_name = env.unwrapped.spec.id
         method = 'gail'
 
-        if not os.path.exists('log'):
-            os.mkdir('log')
+        if not os.path.exists(self.path_save_log):
+            os.mkdir(self.path_save_log)
 
-        if not os.path.exists('log/'+env_name):
-            os.mkdir('log/'+env_name)
-
-        with open('log/'+env_name+'/'+method+'.txt', 'a') as f:
+        with open(self.path_save_log+'/'+method+'.txt', 'a') as f:
             f.write('NEW Sim : \n')
 
         writer = SummaryWriter("runs/")
@@ -370,7 +368,7 @@ class GAIL(Module):
             with torch.no_grad():
                 trpo_loss = L()
             
-            with open('log/'+env_name+'/'+method+'.txt', 'a') as f:
+            with open(self.path_save_log+'/'+method+'.txt', 'a') as f:
                 f.write(str(i)+','+str(self.eval_pol(env, nb_eval, nb_step_eval))+','+str(exp_rwd_mean)+','+str(trpo_loss.item())+','+str(loss.item())+'\n')
 
         return exp_rwd_mean, rwd_iter_means

@@ -6,11 +6,27 @@ import argparse
 import torch
 import gym
 
+import shutil
+
 from models.nets import Expert
 from models.gail import GAIL
 
 
-def main(env_name):
+def main(env_name, path_save_log="default_save"):
+    if path_save_log == "default_save":
+        if os.path.isdir(path_save_log):
+            try:
+                shutil.rmtree(path_save_log)
+            except OSError as e:
+                print(e)
+            else:
+                print("The existing file: "+path_save_log+" is clear")
+        else:
+            os.mkdir(path_save_log)
+            os.mkdir(path_save_log+'/log')
+            path_save_log += '/log'
+            
+
     ckpt_path = "ckpts"
     if not os.path.isdir(ckpt_path):
         os.mkdir(ckpt_path)
@@ -60,7 +76,7 @@ def main(env_name):
         )
     )
 
-    model = GAIL(state_dim, action_dim, discrete, config).to(device)
+    model = GAIL(state_dim, action_dim, discrete, config, path_save_log=path_save_log).to(device)
 
     results = model.train(env, expert)
 

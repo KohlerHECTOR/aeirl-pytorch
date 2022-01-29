@@ -34,15 +34,12 @@ def to_plot(data, label = None, color=""):
         plt.plot(mean_data,label = label, color=color,  linestyle='--')
     
 
-def main(env_name):
-    if not os.path.exists('plot_save'):
-        os.mkdir('plot_save')
+def main(env_name, path_save_exp=''):
+    path_plot = path_save_exp+"/plot"
+    os.mkdir(path_plot)
 
-    if not os.path.exists('plot_save/'+env_name):
-        os.mkdir('plot_save/'+env_name)
-
-    aeirl_data = get_data("log/"+env_name+"/aeirl.txt")
-    gail_data = get_data("log/"+env_name+"/gail.txt")
+    aeirl_data = get_data(path_save_exp+"/log/aeirl.txt")
+    gail_data = get_data(path_save_exp+"/log/gail.txt")
 
     to_plot(aeirl_data[:,:,2], label = "EXPERT", color="aqua")
     to_plot(aeirl_data[:,:,1], label = "AEIRL", color="blue")
@@ -53,7 +50,7 @@ def main(env_name):
     plt.ylabel("episode reward")
     plt.title("Reward Evolution : "+env_name)
     plt.legend()
-    plt.savefig("plot_save/"+env_name+"/all_reward_evolution_"+env_name+".png")
+    plt.savefig(path_plot+"/all_reward_evolution_"+env_name+".png")
     plt.clf()
 
     to_plot(aeirl_data[:,:,3], label = "AEIRL", color="blue")
@@ -65,7 +62,7 @@ def main(env_name):
     plt.title("TRPO Loss Evolution : "+env_name)
     plt.legend()
     plt.grid()
-    plt.savefig("plot_save/"+env_name+"/trpo_loss_"+env_name+".png")
+    plt.savefig(path_plot+"/trpo_loss_"+env_name+".png")
     plt.clf()
 
     to_plot(aeirl_data[:,:,4], label = "AEIRL", color="blue")
@@ -75,7 +72,7 @@ def main(env_name):
     plt.title("Reward Network (Auto-Encoder) Loss Evolution : "+env_name)
     plt.legend()
     plt.grid()
-    plt.savefig("plot_save/"+env_name+"/auto_encoder_loss_"+env_name+".png")
+    plt.savefig(path_plot+"/auto_encoder_loss_"+env_name+".png")
     plt.clf()
     
 if __name__ == "__main__":
@@ -88,6 +85,12 @@ if __name__ == "__main__":
             The possible environments are \
                 [CartPole-v1, Pendulum-v0, BipedalWalker-v3]"
     )
+    parser.add_argument(
+        "--folder_file",
+        type=str,
+        default="",
+        help="Need log Path"
+    )
     args = parser.parse_args()
 
-    main(**vars(args))
+    main(args.env_name, args.folder_file)

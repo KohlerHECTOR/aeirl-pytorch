@@ -1,23 +1,41 @@
 import argparse
 from tqdm import tqdm
+import os
+import time
+from datetime import date
 
-from train import main as main_aeirl
-from train_aeirl import main as main_gail
+from train import main as main_gail
+from train_aeirl import main as main_aeirl
 from plot_from_log import main as plot
 
 def main(env_name, nb_run):
+    date = time.strftime("%Y,%m,%d,%H,%M,%S").replace(',','-')
+
+    if not os.path.exists('experiment'):
+        os.mkdir('experiment')
+    
+    if os.path.exists(date):
+        print("The file "+date+" is already created in the 'experiment' file, wait a second or clean the 'experiment' file")
+        return
+
+    path_save_exp = 'experiment/'+env_name+'-'+date
+    os.mkdir(path_save_exp)
+
+    path_save_log = path_save_exp+'/log'
+
+    os.mkdir(path_save_log)
 
     print(f"Start AEIRL ... ")
     for i in tqdm(range(nb_run)):
-        main_aeirl(env_name)
+        main_aeirl(env_name, path_save_log=path_save_log)
 
     print(f"Start GAIL ... ")
     for i in tqdm(range(nb_run)):
-        main_gail(env_name)
+        main_gail(env_name, path_save_log=path_save_log)
     
     print("End Training phase")
     print("Plot...")
-    plot(env_name)
+    plot(env_name, path_save_exp)
 
     print("Plot saved")
 
