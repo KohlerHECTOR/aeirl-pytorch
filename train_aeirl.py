@@ -71,15 +71,15 @@ def main(env_name):
 
     if hasattr(model, "pi"):
         torch.save(
-            model.pi.state_dict(), os.path.join(ckpt_path, "policy.ckpt")
+            model.pi.state_dict(), os.path.join(ckpt_path, "aeirl_policy.ckpt")
         )
     if hasattr(model, "v"):
         torch.save(
-            model.v.state_dict(), os.path.join(ckpt_path, "value.ckpt")
+            model.v.state_dict(), os.path.join(ckpt_path, "aeirl_value.ckpt")
         )
     if hasattr(model, "d"):
         torch.save(
-            model.d.state_dict(), os.path.join(ckpt_path, "discriminator.ckpt")
+            model.d.state_dict(), os.path.join(ckpt_path, "aeirl_autoencoder.ckpt")
         )
 
 
@@ -88,7 +88,7 @@ if __name__ == "__main__":
     parser.add_argument(
         "--env_name",
         type=str,
-        default="CartPole-v1",
+        default="BipedalWalker-v3",
         help="Type the environment name to run. \
             The possible environments are \
                 [CartPole-v1, Pendulum-v0, BipedalWalker-v3]"

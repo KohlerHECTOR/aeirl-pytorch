@@ -9,7 +9,9 @@
         "epsilon": 0.01,
         "max_kl": 0.01,
         "cg_damping": 0.1,
-        "normalize_advantage": true
+        "normalize_advantage": true,
+        "nb_eval": 10,
+        "nb_step_eval": 10000
     },
     "Pendulum-v0": {
         "num_iters": 500,
@@ -21,7 +23,9 @@
         "epsilon": 0.01,
         "max_kl": 0.01,
         "cg_damping": 0.1,
-        "normalize_advantage": true
+        "normalize_advantage": true,
+        "nb_eval": 10,
+        "nb_step_eval": 10000
     },
     "BipedalWalker-v3": {
         "num_iters": 1000,
@@ -33,6 +37,8 @@
         "epsilon": 0.01,
         "max_kl": 0.01,
         "cg_damping": 0.1,
-        "normalize_advantage": true
+        "normalize_advantage": true,
+        "nb_eval": 10,
+        "nb_step_eval": 10000
     }
 }

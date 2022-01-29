@@ -49,6 +49,28 @@ class GAIL(Module):
 
         return action
 
+    def eval_pol(self, env, nb_eval=10, nb_step_eval=10000):
+
+        eval = 0
+        for n in range(nb_eval):
+            s = env.reset()
+            reward = 0
+
+            for t in range(nb_step_eval):
+                with torch.no_grad():
+                    action = self.act(s)
+
+                next_state, r, done, _ = env.step(action)
+
+                s = next_state
+                reward += r
+
+                if done:
+                    break
+                
+            eval += reward
+        return eval/nb_eval
+        
     def train(self, env, expert, render=False):
         num_iters = self.train_config["num_iters"]
         num_steps_per_iter = self.train_config["num_steps_per_iter"]
@@ -60,6 +82,8 @@ class GAIL(Module):
         max_kl = self.train_config["max_kl"]
         cg_damping = self.train_config["cg_damping"]
         normalize_advantage = self.train_config["normalize_advantage"]
+        nb_eval = self.train_config["nb_eval"]
+        nb_step_eval = self.train_config["nb_step_eval"]
 
         env_name = env.unwrapped.spec.id
         method = 'gail'
@@ -120,9 +144,9 @@ class GAIL(Module):
             ep_rwds = FloatTensor(ep_rwds)
 
         exp_rwd_mean = np.mean(exp_rwd_iter)
-        print(
-            "Expert Reward Mean: {}".format(exp_rwd_mean)
-        )
+        # print(
+        #     "Expert Reward Mean: {}".format(exp_rwd_mean)
+        # )
 
         exp_obs = FloatTensor(np.array(exp_obs))
         exp_acts = FloatTensor(np.array(exp_acts))
@@ -217,10 +241,10 @@ class GAIL(Module):
                 gms.append(ep_gms)
 
             rwd_iter_means.append(np.mean(rwd_iter))
-            print(
-                "Iterations: {},   Reward Mean: {}"
-                .format(i + 1, np.mean(rwd_iter))
-            )
+            # print(
+            #     "Iterations: {},   Reward Mean: {}"
+            #     .format(i + 1, np.mean(rwd_iter))
+            # )
             writer.add_scalars(f'reward', {
                                         'expert': exp_rwd_mean,
                                         'gail': np.mean(rwd_iter),
@@ -245,7 +269,7 @@ class GAIL(Module):
                 + torch.nn.functional.binary_cross_entropy_with_logits(
                     nov_scores, torch.ones_like(nov_scores)
                 )
-                
+
             writer.add_scalar('Loss_Discriminator_GAIL',loss.item(),i)
 
             loss.backward()
@@ -347,6 +371,6 @@ class GAIL(Module):
                 trpo_loss = L()
             
             with open('log/'+env_name+'/'+method+'.txt', 'a') as f:
-                f.write(str(i)+','+str(np.mean(rwd_iter))+','+str(exp_rwd_mean)+','+str(trpo_loss.item())+','+str(loss.item())+'\n')
+                f.write(str(i)+','+str(self.eval_pol(env, nb_eval, nb_step_eval))+','+str(exp_rwd_mean)+','+str(trpo_loss.item())+','+str(loss.item())+'\n')
 
         return exp_rwd_mean, rwd_iter_means

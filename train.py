@@ -66,20 +66,20 @@ def main(env_name):
 
     env.close()
 
-    with open(os.path.join(ckpt_path, "results.pkl"), "wb") as f:
+    with open(os.path.join(ckpt_path, "gail_results.pkl"), "wb") as f:
         pickle.dump(results, f)
 
     if hasattr(model, "pi"):
         torch.save(
-            model.pi.state_dict(), os.path.join(ckpt_path, "policy.ckpt")
+            model.pi.state_dict(), os.path.join(ckpt_path, "gail_policy.ckpt")
         )
     if hasattr(model, "v"):
         torch.save(
-            model.v.state_dict(), os.path.join(ckpt_path, "value.ckpt")
+            model.v.state_dict(), os.path.join(ckpt_path, "gail_value.ckpt")
         )
     if hasattr(model, "d"):
         torch.save(
-            model.d.state_dict(), os.path.join(ckpt_path, "discriminator.ckpt")
+            model.d.state_dict(), os.path.join(ckpt_path, "gail_discriminator.ckpt")
         )
 
 
