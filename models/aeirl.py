@@ -1,5 +1,6 @@
 import numpy as np
 import torch
+import os
 
 from torch.nn import Module
 from torch.utils.tensorboard import SummaryWriter
@@ -59,6 +60,18 @@ class AEIRL(Module):
         max_kl = self.train_config["max_kl"]
         cg_damping = self.train_config["cg_damping"]
         normalize_advantage = self.train_config["normalize_advantage"]
+
+        env_name = env.unwrapped.spec.id
+        method = 'aeirl'
+
+        if not os.path.exists('log'):
+            os.mkdir('log')
+
+        if not os.path.exists('log/'+env_name):
+            os.mkdir('log/'+env_name)
+
+        with open('log/'+env_name+'/'+method+'.txt', 'a') as f:
+            f.write('NEW Sim : \n')
 
         writer = SummaryWriter("runs/")
 
@@ -212,6 +225,7 @@ class AEIRL(Module):
                                         'expert': exp_rwd_mean,
                                         'aeirl': np.mean(rwd_iter),
                                     }, i)
+            
             obs = FloatTensor(np.array(obs))
             acts = FloatTensor(np.array(acts))
             rets = torch.cat(rets)
@@ -227,6 +241,8 @@ class AEIRL(Module):
 
             opt_d.zero_grad()
             loss = nov_scores.mean() - exp_scores.mean()
+            writer.add_scalar('Loss_AE_AEIRL',loss.item(),i)
+
             loss.backward()
             opt_d.step()
 
@@ -315,5 +331,11 @@ class AEIRL(Module):
 
 
             set_params(self.pi, new_params)
+            
+            with torch.no_grad():
+                trpo_loss = L()
+            
+            with open('log/'+env_name+'/'+method+'.txt', 'a') as f:
+                f.write(str(i)+','+str(np.mean(rwd_iter))+','+str(exp_rwd_mean)+','+str(trpo_loss.item())+','+str(loss.item())+'\n')
 
         return exp_rwd_mean, rwd_iter_means

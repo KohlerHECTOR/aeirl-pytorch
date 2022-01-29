@@ -1,5 +1,6 @@
 import numpy as np
 import torch
+import os
 
 from torch.nn import Module
 from torch.utils.tensorboard import SummaryWriter
@@ -48,7 +49,7 @@ class GAIL(Module):
 
         return action
 
-    def train(self, env, expert, render=True):
+    def train(self, env, expert, render=False):
         num_iters = self.train_config["num_iters"]
         num_steps_per_iter = self.train_config["num_steps_per_iter"]
         horizon = self.train_config["horizon"]
@@ -59,6 +60,18 @@ class GAIL(Module):
         max_kl = self.train_config["max_kl"]
         cg_damping = self.train_config["cg_damping"]
         normalize_advantage = self.train_config["normalize_advantage"]
+
+        env_name = env.unwrapped.spec.id
+        method = 'gail'
+
+        if not os.path.exists('log'):
+            os.mkdir('log')
+
+        if not os.path.exists('log/'+env_name):
+            os.mkdir('log/'+env_name)
+
+        with open('log/'+env_name+'/'+method+'.txt', 'a') as f:
+            f.write('NEW Sim : \n')
 
         writer = SummaryWriter("runs/")
 
@@ -232,6 +245,9 @@ class GAIL(Module):
                 + torch.nn.functional.binary_cross_entropy_with_logits(
                     nov_scores, torch.ones_like(nov_scores)
                 )
+                
+            writer.add_scalar('Loss_Discriminator_GAIL',loss.item(),i)
+
             loss.backward()
             opt_d.step()
 
@@ -326,5 +342,11 @@ class GAIL(Module):
             new_params += lambda_ * grad_disc_causal_entropy
 
             set_params(self.pi, new_params)
+
+            with torch.no_grad():
+                trpo_loss = L()
+            
+            with open('log/'+env_name+'/'+method+'.txt', 'a') as f:
+                f.write(str(i)+','+str(np.mean(rwd_iter))+','+str(exp_rwd_mean)+','+str(trpo_loss.item())+','+str(loss.item())+'\n')
 
         return exp_rwd_mean, rwd_iter_means
