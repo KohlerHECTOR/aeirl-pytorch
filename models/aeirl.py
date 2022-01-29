@@ -2,6 +2,7 @@ import numpy as np
 import torch
 
 from torch.nn import Module
+from torch.utils.tensorboard import SummaryWriter
 
 from models.nets import PolicyNetwork, ValueNetwork, AE
 from utils.funcs import get_flat_grads, get_flat_params, set_params, \
@@ -58,6 +59,8 @@ class AEIRL(Module):
         max_kl = self.train_config["max_kl"]
         cg_damping = self.train_config["cg_damping"]
         normalize_advantage = self.train_config["normalize_advantage"]
+
+        writer = SummaryWriter("runs/")
 
         opt_d = torch.optim.Adam(self.d.parameters())
 
@@ -205,7 +208,10 @@ class AEIRL(Module):
                 "Iterations: {},   Reward Mean: {}"
                 .format(i + 1, np.mean(rwd_iter))
             )
-
+            writer.add_scalars(f'reward', {
+                                        'expert': exp_rwd_mean,
+                                        'aeirl': np.mean(rwd_iter),
+                                    }, i)
             obs = FloatTensor(np.array(obs))
             acts = FloatTensor(np.array(acts))
             rets = torch.cat(rets)

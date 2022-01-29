@@ -2,6 +2,7 @@ import numpy as np
 import torch
 
 from torch.nn import Module
+from torch.utils.tensorboard import SummaryWriter
 
 from models.nets import PolicyNetwork, ValueNetwork, Discriminator
 from utils.funcs import get_flat_grads, get_flat_params, set_params, \
@@ -47,7 +48,7 @@ class GAIL(Module):
 
         return action
 
-    def train(self, env, expert, render=False):
+    def train(self, env, expert, render=True):
         num_iters = self.train_config["num_iters"]
         num_steps_per_iter = self.train_config["num_steps_per_iter"]
         horizon = self.train_config["horizon"]
@@ -58,6 +59,8 @@ class GAIL(Module):
         max_kl = self.train_config["max_kl"]
         cg_damping = self.train_config["cg_damping"]
         normalize_advantage = self.train_config["normalize_advantage"]
+
+        writer = SummaryWriter("runs/")
 
         opt_d = torch.optim.Adam(self.d.parameters())
 
@@ -205,7 +208,10 @@ class GAIL(Module):
                 "Iterations: {},   Reward Mean: {}"
                 .format(i + 1, np.mean(rwd_iter))
             )
-
+            writer.add_scalars(f'reward', {
+                                        'expert': exp_rwd_mean,
+                                        'gail': np.mean(rwd_iter),
+                                    }, i)
             obs = FloatTensor(np.array(obs))
             acts = FloatTensor(np.array(acts))
             rets = torch.cat(rets)

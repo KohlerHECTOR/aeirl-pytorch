@@ -122,8 +122,6 @@ class AE(Module):
             Tanh(),
             Linear(50, 50),
             Tanh(),
-            Linear(50, 50),
-            Tanh(),
             Linear(50, self.net_in_dim),
         )
 
