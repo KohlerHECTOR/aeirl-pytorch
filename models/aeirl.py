@@ -70,6 +70,8 @@ class AEIRL(Module):
         exp_acts = []
 
         steps = 0
+
+############ EXPERT DATA #######################################################
         while steps < num_steps_per_iter:
             ep_obs = []
             ep_rwds = []
@@ -113,7 +115,10 @@ class AEIRL(Module):
 
         exp_obs = FloatTensor(np.array(exp_obs))
         exp_acts = FloatTensor(np.array(exp_acts))
+################################################################################
 
+
+########### MAIN LOOP###########################################################
         rwd_iter_means = []
         for i in range(num_iters):
             rwd_iter = []

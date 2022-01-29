@@ -81,13 +81,11 @@ class Discriminator(Module):
             self.net_in_dim = state_dim + action_dim
 
         self.net = Sequential(
-            Linear(self.net_in_dim, 50),
+            Linear(self.net_in_dim, 100),
             Tanh(),
-            Linear(50, 50),
+            Linear(100, 100),
             Tanh(),
-            Linear(50, 50),
-            Tanh(),
-            Linear(50, 1),
+            Linear(100, 1),
         )
 
     def forward(self, states, actions):
@@ -125,7 +123,7 @@ class AE(Module):
             Linear(100, self.net_in_dim))
 
     def forward(self, states, actions):
-        return torch.sigmoid(self.get_logits(states, actions))
+        return self.get_logits(states, actions)
 
     def get_logits(self, states, actions):
         if self.discrete:

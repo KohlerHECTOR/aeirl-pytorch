@@ -48,7 +48,7 @@ class GAIL(Module):
 
         return action
 
-    def train(self, env, expert, render=True):
+    def train(self, env, expert, render=False):
         num_iters = self.train_config["num_iters"]
         num_steps_per_iter = self.train_config["num_steps_per_iter"]
         horizon = self.train_config["horizon"]
