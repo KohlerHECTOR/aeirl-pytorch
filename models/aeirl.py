@@ -59,7 +59,7 @@ class AEIRL(Module):
         cg_damping = self.train_config["cg_damping"]
         normalize_advantage = self.train_config["normalize_advantage"]
 
-        opt_d = torch.optim.Adam(self.d.parameters())
+        opt_d = torch.optim.Adam(self.d.parameters(), lr = 3e-4)
 
         exp_rwd_iter = []
 

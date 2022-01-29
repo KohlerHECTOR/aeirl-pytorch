@@ -118,13 +118,11 @@ class AE(Module):
             self.net_in_dim = state_dim + action_dim
 
         self.net = Sequential(
-            Linear(self.net_in_dim, 50),
+            Linear(self.net_in_dim, 100),
             Tanh(),
-            Linear(50, 50),
+            Linear(100, 100),
             Tanh(),
-            Linear(50, 50),
-            Tanh(),
-            Linear(50, self.net_in_dim),
+            Linear(100, self.net_in_dim),
         )
 
     def forward(self, states, actions):
