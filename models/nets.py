@@ -99,6 +99,7 @@ class Discriminator(Module):
 
         return self.net(sa)
 
+
 class AE(Module):
     def __init__(self, state_dim, action_dim, discrete) -> None:
         super().__init__()
@@ -133,8 +134,8 @@ class AE(Module):
         sa_saved = torch.clone(sa)
         forward_ = self.net(sa)
 
+        return torch.sum((forward_ - sa_saved)**2, axis=1)
 
-        return  torch.sum((forward_ - sa_saved)**2, axis = 1)
 
 class Expert(Module):
     def __init__(
@@ -143,6 +144,7 @@ class Expert(Module):
         action_dim,
         discrete,
         train_config=None
+
     ) -> None:
         super().__init__()
 

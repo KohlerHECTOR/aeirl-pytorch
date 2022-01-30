@@ -40,5 +40,34 @@
         "normalize_advantage": true,
         "nb_eval": 10,
         "nb_step_eval": 10000
+    },
+    "Hopper-v2": {
+        "num_iters": 100,
+        "num_steps_per_iter": 5000,
+        "horizon": null,
+        "lambda": 1e-3,
+        "gae_gamma": 0.99,
+        "gae_lambda": 0.99,
+        "epsilon": 0.01,
+        "max_kl": 0.01,
+        "cg_damping": 0.1,
+        "normalize_advantage": true,
+        "nb_eval": 10,
+        "nb_step_eval": 10000
+    },
+
+    "Swimmer-v2": {
+        "num_iters": 100,
+        "num_steps_per_iter": 1000,
+        "horizon": null,
+        "lambda": 1e-3,
+        "gae_gamma": 0.99,
+        "gae_lambda": 0.99,
+        "epsilon": 0.01,
+        "max_kl": 0.01,
+        "cg_damping": 0.1,
+        "normalize_advantage": true,
+        "nb_eval": 10,
+        "nb_step_eval": 1000
     }
 }

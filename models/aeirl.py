@@ -74,7 +74,7 @@ class AEIRL(Module):
 
         return eval/nb_eval
 
-    def train(self, env, expert, render=False):
+    def train(self, env, expert, envs_mujoco, render=False):
         num_iters = self.train_config["num_iters"]
         num_steps_per_iter = self.train_config["num_steps_per_iter"]
         horizon = self.train_config["horizon"]
@@ -97,7 +97,7 @@ class AEIRL(Module):
         with open(self.path_save_log+'/'+method+'.txt', 'a') as f:
             f.write('NEW Sim : \n')
 
-        writer = SummaryWriter("runs/")
+        writer = SummaryWriter(f"runs/{env_name}")
 
         opt_d = torch.optim.Adam(self.d.parameters())
 
@@ -119,7 +119,10 @@ class AEIRL(Module):
             ob = env.reset()
 
             while not done and steps < num_steps_per_iter:
-                act = expert.act(ob)
+                if env_name in envs_mujoco:
+                    act = expert.predict(ob)[0]
+                else:
+                    act = expert.act(ob)
 
                 ep_obs.append(ob)
                 exp_obs.append(ob)
@@ -251,10 +254,10 @@ class AEIRL(Module):
             #     .format(i + 1, np.mean(rwd_iter))
             # )
             writer.add_scalars(f'reward', {
-                                        'expert': exp_rwd_mean,
-                                        'aeirl': np.mean(rwd_iter),
-                                    }, i)
-            
+                'expert': exp_rwd_mean,
+                'aeirl': np.mean(rwd_iter),
+            }, i)
+
             obs = FloatTensor(np.array(obs))
             acts = FloatTensor(np.array(acts))
             rets = torch.cat(rets)
@@ -270,7 +273,7 @@ class AEIRL(Module):
 
             opt_d.zero_grad()
             loss = nov_scores.mean() - exp_scores.mean()
-            writer.add_scalar('Loss_AE_AEIRL',loss.item(),i)
+            writer.add_scalar('Loss_AE_AEIRL', loss.item(), i)
 
             loss.backward()
             opt_d.step()
@@ -310,9 +313,9 @@ class AEIRL(Module):
                 distb = self.pi(obs)
 
                 return (advs * torch.exp(
-                            distb.log_prob(acts)
-                            - old_distb.log_prob(acts).detach()
-                        )).mean()
+                    distb.log_prob(acts)
+                    - old_distb.log_prob(acts).detach()
+                )).mean()
 
             def kld():
                 distb = self.pi(obs)
@@ -332,12 +335,12 @@ class AEIRL(Module):
                     cov = distb.covariance_matrix.sum(-1)
 
                     return (0.5) * (
-                            (old_cov / cov).sum(-1)
-                            + (((old_mean - mean) ** 2) / cov).sum(-1)
-                            - self.action_dim
-                            + torch.log(cov).sum(-1)
-                            - torch.log(old_cov).sum(-1)
-                        ).mean()
+                        (old_cov / cov).sum(-1)
+                        + (((old_mean - mean) ** 2) / cov).sum(-1)
+                        - self.action_dim
+                        + torch.log(cov).sum(-1)
+                        - torch.log(old_cov).sum(-1)
+                    ).mean()
 
             grad_kld_old_param = get_flat_grads(kld(), self.pi)
 
@@ -358,13 +361,13 @@ class AEIRL(Module):
                 g, s, Hs, max_kl, L, kld, old_params, self.pi
             )
 
-
             set_params(self.pi, new_params)
-            
+
             with torch.no_grad():
                 trpo_loss = L()
 
             with open(self.path_save_log+'/'+method+'.txt', 'a') as f:
-                f.write(str(i)+','+str(self.eval_pol(env, nb_eval, nb_step_eval))+','+str(exp_rwd_mean)+','+str(trpo_loss.item())+','+str(loss.item())+'\n')
+                f.write(str(i)+','+str(self.eval_pol(env, nb_eval, nb_step_eval))+',' +
+                        str(exp_rwd_mean)+','+str(trpo_loss.item())+','+str(loss.item())+'\n')
 
         return exp_rwd_mean, rwd_iter_means
