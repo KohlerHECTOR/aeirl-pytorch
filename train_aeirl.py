@@ -72,6 +72,11 @@ def main(env_name, envs_mujoco, path_save_log="default_save"):
             expert_config = json.load(f)
         expert = Expert(state_dim, action_dim, discrete,
                         **expert_config).to(device)
+        expert.pi.load_state_dict(
+            torch.load(
+                os.path.join(expert_ckpt_path, "policy.ckpt"), map_location=device
+            )
+        )
 
     model = AEIRL(state_dim, action_dim, discrete, config,
                   path_save_log=path_save_log).to(device)

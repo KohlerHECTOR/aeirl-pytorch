@@ -6,7 +6,7 @@ import argparse
 
 
 def main():
-    env = gym.make('Hopper-v2')
+    env = gym.make('Walker2d-v2')
     env = Monitor(env)
 
     model = PPO.load(args.model_file, env=env, seed=args.seed)
@@ -24,7 +24,7 @@ if __name__ == '__main__':
     parser.add_argument('--seed', type=int, default=1998)
     parser.add_argument('--n_eval_episodes', type=int, default=10)
     parser.add_argument('--model_file', type=str,
-                        default="hopper_model.zip")
+                        default="Walker2d_model.zip")
 
     args = parser.parse_args()
     main()

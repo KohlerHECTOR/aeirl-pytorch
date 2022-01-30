@@ -28,7 +28,8 @@ def main():
     with open(args.hyperparams_file) as json_file:
         hyperparams = json.load(json_file)
     hyperparams = hyperparams[args.env_name]
-    hyperparams["policy_kwargs"]["activation_fn"] = torch.nn.ReLU
+    if "activation_fn" in hyperparams:
+        hyperparams["policy_kwargs"]["activation_fn"] = torch.nn.ReLU
 
     model = PPO('MlpPolicy', env, tensorboard_log=log_file_name,
                 verbose=1, **hyperparams)
@@ -51,7 +52,7 @@ def main():
 if __name__ == '__main__':
     parser = argparse.ArgumentParser(
         description='Launch pybullet simulation run.')
-    parser.add_argument('--env_name', type=str, default="Swimmer-v2")
+    parser.add_argument('--env_name', type=str, default="Walker2d-v2")
     parser.add_argument('--total_timesteps', type=int, default=int(1e6))
     parser.add_argument('--render', type=bool, default=False)
     parser.add_argument('--n_envs', type=int, default=1)
@@ -60,7 +61,7 @@ if __name__ == '__main__':
     parser.add_argument('--hyperparams_file', type=str,
                         default="hyperparams.json")
     parser.add_argument('--save_file', type=str,
-                        default="Swimmer_model")
+                        default="Walker2d_model")
 
     args = parser.parse_args()
     main()

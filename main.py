@@ -48,7 +48,7 @@ if __name__ == "__main__":
     parser.add_argument(
         "--env_name",
         type=str,
-        default="Hopper-v2",
+        default="Walker2d-v2",
         help="Type the environment name to run. \
             The possible environments are \
                 [CartPole-v1, Pendulum-v0, BipedalWalker-v3, Hopper-v2, Swimmer-v2]"
@@ -60,7 +60,7 @@ if __name__ == "__main__":
         help="Number of run time"
     )
     parser.add_argument('--envs_mujoco', nargs='+',
-                        default=["Hopper-v2", "Swimmer-v2"])
+                        default=["Hopper-v2", "Swimmer-v2", "Walker2d-v2"])
     args = parser.parse_args()
 
     main(**vars(args))
