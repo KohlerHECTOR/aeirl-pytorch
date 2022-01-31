@@ -51,7 +51,7 @@ if __name__ == "__main__":
     parser.add_argument(
         "--env_name",
         type=str,
-        default="Walker2d-v2",
+        default="Hopper-v2",
         help="Type the environment name to run. \
             The possible environments are \
                 [Hopper-v2, Swimmer-v2, Walker2d-v2]" # [CartPole-v1, Pendulum-v0, BipedalWalker-v3, Hopper-v2, Swimmer-v2, Walker2d-v2]"
