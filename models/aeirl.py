@@ -3,7 +3,7 @@ import torch
 import os
 
 from torch.nn import Module
-from torch.utils.tensorboard import SummaryWriter
+# from torch.utils.tensorboard import SummaryWriter
 
 from models.nets import PolicyNetwork, ValueNetwork, AE
 from utils.funcs import get_flat_grads, get_flat_params, set_params, \
@@ -41,10 +41,12 @@ class AEIRL(Module):
     def get_networks(self):
         return [self.pi, self.v]
 
-    def act(self, state):
+    def act(self, state, deterministic = False):
         self.pi.eval()
-
         state = FloatTensor(state)
+        if deterministic:
+            return self.pi(state, deterministic = True).detach().cpu().numpy()
+
         distb = self.pi(state)
 
         action = distb.sample().detach().cpu().numpy()
@@ -55,12 +57,13 @@ class AEIRL(Module):
 
         eval = 0
         for n in range(nb_eval):
+            env.seed(n)
             s = env.reset()
             reward = 0
 
             for t in range(nb_step_eval):
                 with torch.no_grad():
-                    action = self.act(s)
+                    action = self.act(s, deterministic = True)
 
                 next_state, r, done, _ = env.step(action)
 
@@ -72,9 +75,10 @@ class AEIRL(Module):
 
             eval += reward
 
+        print("EVAL REWARD : {}".format(eval/nb_eval))
         return eval/nb_eval
 
-    def train(self, env, expert, envs_mujoco, render=False):
+    def train(self, env, expert, render=False):
         num_iters = self.train_config["num_iters"]
         num_steps_per_iter = self.train_config["num_steps_per_iter"]
         horizon = self.train_config["horizon"]
@@ -97,7 +101,7 @@ class AEIRL(Module):
         with open(self.path_save_log+'/'+method+'.txt', 'a') as f:
             f.write('NEW Sim : \n')
 
-        writer = SummaryWriter(f"runs/{env_name}")
+        # writer = SummaryWriter(f"runs/{env_name}")
 
         opt_d = torch.optim.Adam(self.d.parameters())
 
@@ -119,7 +123,7 @@ class AEIRL(Module):
             ob = env.reset()
 
             while not done and steps < num_steps_per_iter:
-                if env_name in envs_mujoco:
+                if env_name in ["Hopper-v2", "Swimmer-v2", "Walker2d-v2"]:
                     act = expert.predict(ob)[0]
                 else:
                     act = expert.act(ob)
@@ -253,10 +257,10 @@ class AEIRL(Module):
             #     "Iterations: {},   Reward Mean: {}"
             #     .format(i + 1, np.mean(rwd_iter))
             # )
-            writer.add_scalars(f'reward', {
-                'expert': exp_rwd_mean,
-                'aeirl': np.mean(rwd_iter),
-            }, i)
+            # writer.add_scalars(f'reward', {
+            #     'expert': exp_rwd_mean,
+            #     'aeirl': np.mean(rwd_iter),
+            # }, i)
 
             obs = FloatTensor(np.array(obs))
             acts = FloatTensor(np.array(acts))
@@ -273,7 +277,7 @@ class AEIRL(Module):
 
             opt_d.zero_grad()
             loss = nov_scores.mean() - exp_scores.mean()
-            writer.add_scalar('Loss_AE_AEIRL', loss.item(), i)
+            # writer.add_scalar('Loss_AE_AEIRL', loss.item(), i)
 
             loss.backward()
             opt_d.step()

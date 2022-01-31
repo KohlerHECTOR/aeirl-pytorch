@@ -15,13 +15,13 @@ class PolicyNetwork(Module):
         super().__init__()
 
         self.net = Sequential(
-            Linear(state_dim, 50),
+            Linear(state_dim, 64),
             Tanh(),
-            Linear(50, 50),
+            Linear(64, 64),
             Tanh(),
-            Linear(50, 50),
-            Tanh(),
-            Linear(50, action_dim),
+            # Linear(64, 64),
+            # Tanh(),
+            Linear(64, action_dim),
         )
 
         self.state_dim = state_dim
@@ -31,19 +31,21 @@ class PolicyNetwork(Module):
         if not self.discrete:
             self.log_std = Parameter(torch.zeros(action_dim))
 
-    def forward(self, states):
+    def forward(self, states , deterministic = False):
         if self.discrete:
             probs = torch.softmax(self.net(states), dim=-1)
             distb = Categorical(probs)
         else:
             mean = self.net(states)
-
+            if deterministic:
+                return mean
             std = torch.exp(self.log_std)
             cov_mtx = torch.eye(self.action_dim) * (std ** 2)
 
             distb = MultivariateNormal(mean, cov_mtx)
 
         return distb
+
 
 
 class ValueNetwork(Module):
