@@ -15,7 +15,7 @@ import gym
 
 def main():
     start_time_one_env = time.time()
-    checkpoint_callback = CheckpointCallback(save_freq=args.total_timesteps/50, save_path=f'./logs/{args.env_name}/',
+    checkpoint_callback = CheckpointCallback(save_freq=args.total_timesteps/50, save_path=f'./policies/{args.env_name}/',
                                              name_prefix=str(args.env_name))
 
     env = make_vec_env(args.env_name, n_envs=args.n_envs)
