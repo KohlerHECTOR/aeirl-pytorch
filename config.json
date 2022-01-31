@@ -53,7 +53,8 @@
         "cg_damping": 0.1,
         "normalize_advantage": true,
         "nb_eval": 10,
-        "nb_step_eval": 5000
+        "nb_step_eval": 5000,
+        "eval_freq": 1
     },
 
     "Swimmer-v2": {
@@ -68,11 +69,12 @@
         "cg_damping": 0.1,
         "normalize_advantage": true,
         "nb_eval": 10,
-        "nb_step_eval": 5000
+        "nb_step_eval": 5000,
+        "eval_freq": 48
     },
 
     "Walker2d-v2": {
-        "num_iters": 100,
+        "num_iters": 1200,
         "num_steps_per_iter": 5000,
         "horizon": null,
         "lambda": 1e-3,
@@ -83,6 +85,7 @@
         "cg_damping": 0.1,
         "normalize_advantage": true,
         "nb_eval": 10,
-        "nb_step_eval": 5000
+        "nb_step_eval": 5000,
+        "eval_freq": 48
     }
 }

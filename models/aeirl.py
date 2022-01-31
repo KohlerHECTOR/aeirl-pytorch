@@ -91,6 +91,7 @@ class AEIRL(Module):
         normalize_advantage = self.train_config["normalize_advantage"]
         nb_eval = self.train_config["nb_eval"]
         nb_step_eval = self.train_config["nb_step_eval"]
+        eval_freq = self.train_config["eval_freq"]
 
         env_name = env.unwrapped.spec.id
         method = 'aeirl'
@@ -100,7 +101,8 @@ class AEIRL(Module):
 
         with open(self.path_save_log+'/'+method+'.txt', 'a') as f:
             f.write('NEW Sim : \n')
-
+        with open(self.path_save_log+'/'+method+'_eval.txt', 'a') as f:
+            f.write('NEW Sim : \n')
         # writer = SummaryWriter(f"runs/{env_name}")
 
         opt_d = torch.optim.Adam(self.d.parameters())
@@ -371,7 +373,10 @@ class AEIRL(Module):
                 trpo_loss = L()
 
             with open(self.path_save_log+'/'+method+'.txt', 'a') as f:
-                f.write(str(i)+','+str(self.eval_pol(env, nb_eval, nb_step_eval))+',' +
-                        str(exp_rwd_mean)+','+str(trpo_loss.item())+','+str(loss.item())+'\n')
+                f.write(str(i)+',' + str(exp_rwd_mean)+','+str(trpo_loss.item())+','+str(loss.item())+'\n')
+
+            if (i + 1) % eval_freq == 0 or i == 0:
+                with open(self.path_save_log+'/'+method+'_eval.txt', 'a') as f:
+                    f.write(str(i)+','+str(self.eval_pol(env, nb_eval, nb_step_eval)) +'\n')
 
         return exp_rwd_mean, rwd_iter_means
