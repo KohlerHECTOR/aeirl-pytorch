@@ -10,7 +10,7 @@ from plot_from_log import main as plot
 
 from torch import manual_seed
 
-def main(env_name, nb_runs):
+def main(env_name, nb_runs, noise):
     date = time.strftime("%Y,%m,%d,%H,%M,%S").replace(',', '-')
 
     if not os.path.exists('experiment'):
@@ -20,7 +20,10 @@ def main(env_name, nb_runs):
         print("The file "+date+" is already created in the 'experiment' file, wait a second or clean the 'experiment' file")
         return
 
-    path_save_exp = 'experiment/'+env_name+'-'+date
+    if noise > 0:
+        path_save_exp = 'experiment/'+env_name+'-'+str(noise)+'-'+date
+    else:
+        path_save_exp = 'experiment/'+env_name+'-'+date
     os.mkdir(path_save_exp)
 
     path_save_log = path_save_exp+'/log'
@@ -30,12 +33,12 @@ def main(env_name, nb_runs):
     print(f"Start AEIRL ... ")
     for i in tqdm(range(nb_runs)):
         manual_seed(i)
-        main_aeirl(env_name, path_save_log=path_save_log,  simu_nb = i)
+        main_aeirl(env_name, path_save_log=path_save_log,  simu_nb = i, noise = noise)
 
     print(f"Start GAIL ... ")
     for i in tqdm(range(nb_runs)):
         manual_seed(i)
-        main_gail(env_name, path_save_log=path_save_log,  simu_nb = i)
+        main_gail(env_name, path_save_log=path_save_log,  simu_nb = i, noise = noise)
 
     print("End Training phase")
     print("Plot...")
@@ -61,6 +64,12 @@ if __name__ == "__main__":
         type=int,
         default=5,
         help="Number of run time"
+    )
+    parser.add_argument(
+        "--noise",
+        type=float,
+        default=0,
+        help="noise for expert data"
     )
     # parser.add_argument('--envs_mujoco', nargs='+',
     #                     default=["Hopper-v2", "Swimmer-v2", "Walker2d-v2"])

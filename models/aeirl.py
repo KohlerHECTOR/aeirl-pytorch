@@ -78,7 +78,8 @@ class AEIRL(Module):
         print("EVAL REWARD : {}".format(eval/nb_eval))
         return eval/nb_eval
 
-    def train(self, env, expert, render=False):
+    def train(self, env, expert, render=False, noise = 0):
+        print("NOISE", noise)
         num_iters = self.train_config["num_iters"]
         num_steps_per_iter = self.train_config["num_steps_per_iter"]
         horizon = self.train_config["horizon"]
@@ -130,9 +131,9 @@ class AEIRL(Module):
                 else:
                     act = expert.act(ob)
 
-                ep_obs.append(ob)
-                exp_obs.append(ob)
-                exp_acts.append(act)
+                ep_obs.append(ob + np.random.normal(0, noise, self.state_dim))
+                exp_obs.append(ob + np.random.normal(0, noise, self.state_dim))
+                exp_acts.append(act + np.random.normal(0, noise, self.action_dim))
 
                 if render:
                     env.render()
