@@ -40,11 +40,11 @@ class GAIL(Module):
     def get_networks(self):
         return [self.pi, self.v]
 
-    def act(self, state, deterministic = False):
+    def act(self, state, deterministic=False):
         self.pi.eval()
         state = FloatTensor(state)
         if deterministic:
-            return self.pi(state, deterministic = True).detach().cpu().numpy()
+            return self.pi(state, deterministic=True).detach().cpu().numpy()
 
         distb = self.pi(state)
 
@@ -62,7 +62,7 @@ class GAIL(Module):
 
             for t in range(nb_step_eval):
                 with torch.no_grad():
-                    action = self.act(s, deterministic = True)
+                    action = self.act(s, deterministic=True)
 
                 next_state, r, done, _ = env.step(action)
 
@@ -122,7 +122,7 @@ class GAIL(Module):
             ob = env.reset()
 
             while not done and steps < num_steps_per_iter:
-                if env_name in ["Hopper-v2", "Swimmer-v2", "Walker2d-v2"]:
+                if env_name in ["Hopper-v2", "Swimmer-v2", "Walker2d-v2", "Reacher-v2"]:
                     act = expert.predict(ob)[0]
                 else:
                     act = expert.act(ob)
@@ -379,10 +379,12 @@ class GAIL(Module):
                 trpo_loss = L()
 
             with open(self.path_save_log+'/'+method+'.txt', 'a') as f:
-                f.write(str(i)+',' + str(exp_rwd_mean)+','+str(trpo_loss.item())+','+str(loss.item())+'\n')
+                f.write(str(i)+',' + str(exp_rwd_mean)+',' +
+                        str(trpo_loss.item())+','+str(loss.item())+'\n')
 
             if (i + 1) % eval_freq == 0 or i == 0:
                 with open(self.path_save_log+'/'+method+'_eval.txt', 'a') as f:
-                    f.write(str(i)+','+str(self.eval_pol(env, nb_eval, nb_step_eval)) +'\n')
+                    f.write(
+                        str(i)+','+str(self.eval_pol(env, nb_eval, nb_step_eval)) + '\n')
 
         return exp_rwd_mean, rwd_iter_means

@@ -12,7 +12,7 @@ from models.nets import Expert
 from models.aeirl import AEIRL
 
 
-def main(env_name, path_save_log="default_save", simu_nb = None):
+def main(env_name, path_save_log="default_save", simu_nb=None):
     if path_save_log == "default_save":
         if os.path.isdir(path_save_log):
             try:
@@ -30,7 +30,8 @@ def main(env_name, path_save_log="default_save", simu_nb = None):
     if not os.path.isdir(ckpt_path):
         os.mkdir(ckpt_path)
 
-    if env_name not in ["Hopper-v2", "Swimmer-v2", "Walker2d-v2"]: # ["CartPole-v1", "Pendulum-v0", "BipedalWalker-v3", "Hopper-v2", "Swimmer-v2", "Walker2d-v2"]:
+    # ["CartPole-v1", "Pendulum-v0", "BipedalWalker-v3", "Hopper-v2", "Swimmer-v2", "Walker2d-v2"]:
+    if env_name not in ["Hopper-v2", "Swimmer-v2", "Walker2d-v2", "Reacher-v2"]:
         print("The environment name is wrong!")
         return
 
@@ -64,7 +65,7 @@ def main(env_name, path_save_log="default_save", simu_nb = None):
     else:
         device = "cpu"
 
-    if env_name in ["Hopper-v2", "Swimmer-v2", "Walker2d-v2"]:
+    if env_name in ["Hopper-v2", "Swimmer-v2", "Walker2d-v2", "Reacher-v2"]:
         expert = PPO.load(os.path.join(
             expert_ckpt_path, f"PPO-{env_name}"))
 
@@ -111,7 +112,7 @@ if __name__ == "__main__":
         default="Hopper-v2",
         help="Type the environment name to run. \
             The possible environments are \
-                [Hopper-v2, Swimmer-v2, Walker2d-v2]" # "[CartPole-v1, Pendulum-v0, BipedalWalker-v3, Hopper-v2, Swimmer-v2, Walker2d-v2]"
+                [Hopper-v2, Swimmer-v2, Walker2d-v2,Reacher-v2]"  # "[CartPole-v1, Pendulum-v0, BipedalWalker-v3, Hopper-v2, Swimmer-v2, Walker2d-v2]"
     )
     args = parser.parse_args()
 
