@@ -12,7 +12,7 @@ from models.nets import Expert
 from models.aeirl import AEIRL
 
 
-def main(env_name, path_save_log="default_save", simu_nb=None):
+def main(env_name, path_save_log="default_save", simu_nb = None, noise = 0):
     if path_save_log == "default_save":
         if os.path.isdir(path_save_log):
             try:
@@ -83,7 +83,7 @@ def main(env_name, path_save_log="default_save", simu_nb=None):
     model = AEIRL(state_dim, action_dim, discrete, config,
                   path_save_log=path_save_log).to(device)
 
-    results = model.train(env, expert)
+    results = model.train(env, expert, noise = noise)
 
     env.close()
 
@@ -92,15 +92,15 @@ def main(env_name, path_save_log="default_save", simu_nb=None):
 
     if hasattr(model, "pi"):
         torch.save(
-            model.pi.state_dict(), os.path.join(ckpt_path, "aeirl_policy.ckpt")
+            model.pi.state_dict(), os.path.join(ckpt_path, "aeirl_policy_"+ str(noise) + "_.ckpt")
         )
     if hasattr(model, "v"):
         torch.save(
-            model.v.state_dict(), os.path.join(ckpt_path, "aeirl_value.ckpt")
+            model.v.state_dict(), os.path.join(ckpt_path, "aeirl_value_"+ str(noise) + "_.ckpt")
         )
     if hasattr(model, "d"):
         torch.save(
-            model.d.state_dict(), os.path.join(ckpt_path, "aeirl_autoencoder.ckpt")
+            model.d.state_dict(), os.path.join(ckpt_path, "aeirl_autoencoder_"+ str(noise) + "_.ckpt")
         )
 
 
