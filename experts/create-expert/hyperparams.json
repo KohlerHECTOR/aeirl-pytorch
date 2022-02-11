@@ -1,0 +1,92 @@
+{
+    "Hopper-v2":
+    {
+        "batch_size": 128,
+        "n_steps": 512,
+        "gamma": 0.99,
+        "learning_rate": 3.0e-05,
+        "ent_coef": 0.0,
+        "clip_range": 0.4,
+        "n_epochs": 20,
+        "gae_lambda": 0.92,
+        "max_grad_norm": 0.5,
+        "vf_coef": 0.5,
+        "sde_sample_freq":4,
+        "use_sde":true,
+
+        "policy_kwargs":{
+            "log_std_init":-2,
+            "ortho_init": false,
+            "activation_fn":"nn.ReLU",
+            "net_arch":[ {"vf":[256, 256], "pi":[256, 256]}]
+        }
+    },
+
+    "Swimmer-v2":
+    {
+        "batch_size": 32,
+        "n_steps": 512,
+        "gamma": 0.9999,
+        "learning_rate": 5.49717e-05,
+        "ent_coef": 0.0554757,
+        "clip_range": 0.3,
+        "n_epochs": 10,
+        "gae_lambda": 0.95,
+        "max_grad_norm": 0.6,
+        "vf_coef": 0.38782,
+
+        "policy_kwargs":{
+            "log_std_init":-2,
+            "ortho_init": false,
+            "activation_fn":"nn.ReLU",
+            "net_arch":[{"vf":[256, 256], "pi":[256, 256]}]
+        }
+    },
+
+    "Walker2d-v2":
+    {
+        "batch_size": 128,
+        "n_steps": 512,
+        "gamma": 0.99,
+        "learning_rate": 3.0e-05,
+        "ent_coef": 0.0,
+        "clip_range": 0.4,
+        "n_epochs": 20,
+        "gae_lambda": 0.92,
+        "max_grad_norm": 0.5,
+        "vf_coef": 0.5,
+        "sde_sample_freq":4,
+        "use_sde":true,
+
+        "policy_kwargs":{
+            "log_std_init":-2,
+            "ortho_init": false,
+            "activation_fn":"nn.ReLU",
+            "net_arch":[ {"vf":[256, 256], "pi":[256, 256]}]
+        }
+
+    },
+    "Reacher-v2":
+    {
+        "batch_size": 64,
+        "n_steps": 512,
+        "gamma": 0.99,
+        "learning_rate": 3.0e-05,
+        "ent_coef": 0.0,
+        "clip_range": 0.4,
+        "n_epochs": 20,
+        "gae_lambda": 0.9,
+        "max_grad_norm": 0.5,
+        "vf_coef": 0.5,
+        "sde_sample_freq":4,
+        "use_sde":true,
+
+        "policy_kwargs":{
+            "log_std_init":-2.7,
+            "ortho_init": false,
+            "activation_fn":"nn.ReLU",
+            "net_arch":[ {"vf":[256, 256], "pi":[256, 256]}]
+        }
+
+    }
+}

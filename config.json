@@ -42,19 +42,19 @@
         "nb_step_eval": 5000
     },
     "Hopper-v2": {
-        "num_iters": 25,
+        "num_iters": 1200,
         "num_steps_per_iter": 5000,
         "horizon": null,
         "lambda": 1e-3,
         "gae_gamma": 0.99,
-        "gae_lambda": 0.99,
+        "gae_lambda": 0.92,
         "epsilon": 0.01,
         "max_kl": 0.01,
         "cg_damping": 0.1,
         "normalize_advantage": true,
         "nb_eval": 10,
         "nb_step_eval": 5000,
-        "eval_freq": 1
+        "eval_freq": 48
     },
 
     "Swimmer-v2": {
@@ -79,7 +79,7 @@
         "horizon": null,
         "lambda": 1e-3,
         "gae_gamma": 0.99,
-        "gae_lambda": 0.95,
+        "gae_lambda": 0.92,
         "epsilon": 0.01,
         "max_kl": 0.01,
         "cg_damping": 0.1,
