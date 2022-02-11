@@ -20,10 +20,9 @@ def main(env_name, nb_runs, noise):
         print("The file "+date+" is already created in the 'experiment' file, wait a second or clean the 'experiment' file")
         return
 
-    if noise > 0:
-        path_save_exp = 'experiment/'+env_name+'-'+str(noise)+'-'+date
-    else:
-        path_save_exp = 'experiment/'+env_name+'-'+date
+
+    path_save_exp = 'experiment/'+env_name+'-'+str(noise)+'-'+date
+
     os.mkdir(path_save_exp)
 
     path_save_log = path_save_exp+'/log'
