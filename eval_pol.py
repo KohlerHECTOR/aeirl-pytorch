@@ -59,12 +59,22 @@ def main():
     else:
         path_noisy = f"final_policies/{args.env_name[:-3]}/{args.model}_policy_0.3_.ckpt"
 
-    pol_non_noisy = AEIRL(state_dim, action_dim, False)
+    if args.model=="aeirl":
+        model = AEIRL
+        reward_model = AE
+    elif args.model=="gail":
+        model = GAIL
+        reward_model = Discriminator
+    else:
+        print("Wrong model")
+        return 
+
+    pol_non_noisy = model(state_dim, action_dim, False)
     pol_non_noisy.pi.load_state_dict(torch.load(path_non_noisy))
 
     list_model_to_test.append(pol_non_noisy)
 
-    pol_noisy = AEIRL(state_dim, action_dim, False)
+    pol_noisy = model(state_dim, action_dim, False)
     pol_noisy.pi.load_state_dict(torch.load(path_noisy))
 
     list_model_to_test.append(pol_noisy)

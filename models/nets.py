@@ -101,6 +101,16 @@ class Discriminator(Module):
 
         return self.net(sa)
 
+    def get_first_linear(self, states, actions):
+        with torch.no_grad():
+            if self.discrete:
+                actions = self.act_emb(actions.long())
+
+            sa = torch.cat([states, actions], dim=-1)
+            sa_saved = torch.clone(sa)
+            new_net = self.net[0]
+            
+            return new_net(sa)
 
 class AE(Module):
     def __init__(self, state_dim, action_dim, discrete) -> None:
@@ -138,6 +148,16 @@ class AE(Module):
 
         return torch.sum((forward_ - sa_saved)**2, axis=1)
 
+    def get_first_linear(self, states, actions):
+        with torch.no_grad():
+            if self.discrete:
+                actions = self.act_emb(actions.long())
+
+            sa = torch.cat([states, actions], dim=-1)
+            sa_saved = torch.clone(sa)
+            new_net = self.net[0]
+            
+            return new_net(sa)
 
 class Expert(Module):
     def __init__(
