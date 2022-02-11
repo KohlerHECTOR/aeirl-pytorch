@@ -76,7 +76,7 @@ class GAIL(Module):
         print("EVAL REWARD : {}".format(eval/nb_eval))
         return eval/nb_eval
 
-    def train(self, env, expert, render=False, noise = 0):
+    def train(self, env, expert, render=False, noise=0):
         print("NOISE", noise)
         num_iters = self.train_config["num_iters"]
         num_steps_per_iter = self.train_config["num_steps_per_iter"]
@@ -124,13 +124,14 @@ class GAIL(Module):
 
             while not done and steps < num_steps_per_iter:
                 if env_name in ["Hopper-v2", "Swimmer-v2", "Walker2d-v2", "Reacher-v2"]:
-                    act = expert.predict(ob)[0]
+                    act = expert.predict(ob, deterministic=True)[0]
                 else:
                     act = expert.act(ob)
 
                 ep_obs.append(ob + np.random.normal(0, noise, self.state_dim))
                 exp_obs.append(ob + np.random.normal(0, noise, self.state_dim))
-                exp_acts.append(act + np.random.normal(0, noise, self.action_dim))
+                exp_acts.append(
+                    act + np.random.normal(0, noise, self.action_dim))
 
                 if render:
                     env.render()

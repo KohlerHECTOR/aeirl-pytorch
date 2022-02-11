@@ -6,7 +6,7 @@ import argparse
 
 
 def main():
-    env = gym.make('Walker2d-v2')
+    env = gym.make(args.env_name)
     env = Monitor(env)
 
     model = PPO.load(args.model_file, env=env, seed=args.seed)
@@ -19,12 +19,13 @@ def main():
 
 if __name__ == '__main__':
     parser = argparse.ArgumentParser(
-        description='Launch pybullet simulation run.')
-    parser.add_argument('--render', type=bool, default=False)
-    parser.add_argument('--seed', type=int, default=1998)
-    parser.add_argument('--n_eval_episodes', type=int, default=10)
+        description='Evaluate the agent.')
+    parser.add_argument('--env_name', type=str, default="Walker2d-v2")
     parser.add_argument('--model_file', type=str,
-                        default="Walker2d_model.zip")
+                        default="../Walker2d-v2/PPO-Walker2d-v2-new")
+    parser.add_argument('--render', type=bool, default=False)
+    parser.add_argument('--seed', type=int, default=2000)
+    parser.add_argument('--n_eval_episodes', type=int, default=10)
 
     args = parser.parse_args()
     main()
