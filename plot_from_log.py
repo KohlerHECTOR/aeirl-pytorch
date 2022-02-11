@@ -51,7 +51,7 @@ def to_plot(data, label = None, color=""):
         plt.plot(mean_data,label = label, color=color,  linestyle='--')
 
 
-def main(env_name, path_save_exp=''):
+def main(env_name, path_save_exp='', noise = 0):
 
 
 
@@ -66,9 +66,9 @@ def main(env_name, path_save_exp=''):
     aeirl_eval_data = get_eval_data(path_save_exp+"/log/aeirl_eval.txt")
     gail_eval_data = get_eval_data(path_save_exp+"/log/gail_eval.txt")
 
-    to_plot(aeirl_data[:,:26,1], label = "EXPERT", color="aqua")
+    to_plot(aeirl_data[:,:26,1], label = "EXPERT", color="black")
     to_plot(aeirl_eval_data[:,:,1], label = "AEIRL", color="blue")
-    to_plot(gail_eval_data[:,:,1], label = "GAIL", color="yellow")
+    to_plot(gail_eval_data[:,:,1], label = "GAIL", color="red")
 
 
     with open("config.json") as f:
@@ -80,20 +80,20 @@ def main(env_name, path_save_exp=''):
     num_steps_per_iter_in_thousands = config["num_steps_per_iter"] / 1e3
 
     plt.xlabel("x" + str(int(steps_per_eval_in_thousands)) +  "K Timesteps")
-    plt.ylabel("episode reward")
-    plt.title("Reward Evolution : "+env_name)
+    plt.ylabel("Eval Reward Sum")
+    plt.title(env_name + " , noise = " + str(noise))
     plt.legend()
     plt.grid()
     plt.savefig(path_plot+"/all_reward_evolution_"+env_name+".png")
     plt.clf()
 
     to_plot(aeirl_data[:,:,2], label = "AEIRL", color="blue")
-    to_plot(gail_data[:,:,2], label = "GAIL", color="yellow")
+    to_plot(gail_data[:,:,2], label = "GAIL", color="red")
 
 
     plt.xlabel("x" + str(int(num_steps_per_iter_in_thousands)) +  "K Timesteps")
-    plt.ylabel("episode Loss")
-    plt.title("TRPO Loss Evolution : "+env_name)
+    plt.ylabel("TRPO Loss")
+    plt.title(env_name + " , noise = " + str(noise))
     plt.legend()
     plt.grid()
     plt.savefig(path_plot+"/trpo_loss_"+env_name+".png")
@@ -102,8 +102,8 @@ def main(env_name, path_save_exp=''):
     to_plot(aeirl_data[:,:,3], label = "AEIRL", color="blue")
 
     plt.xlabel("x" + str(int(num_steps_per_iter_in_thousands)) +  "K Timesteps")
-    plt.ylabel("episode Loss")
-    plt.title("Reward Network (Auto-Encoder) Loss Evolution : "+env_name)
+    plt.ylabel("Reward Network Loss")
+    plt.title(env_name + " , noise = " + str(noise))
     plt.legend()
     plt.grid()
     plt.savefig(path_plot+"/auto_encoder_loss_"+env_name+".png")
@@ -125,6 +125,12 @@ if __name__ == "__main__":
         default="",
         help="Need log Path"
     )
+    parser.add_argument(
+        "--noise",
+        type=float,
+        default=0,
+        help="expert data noise"
+    )
     args = parser.parse_args()
 
-    main(args.env_name, args.folder_file)
+    main(args.env_name, args.folder_file, args.noise)
