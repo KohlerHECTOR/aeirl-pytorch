@@ -115,12 +115,6 @@ if __name__ == "__main__":
     # parser.add_argument('--envs_mujoco', nargs='+',
     #                     default=["Hopper-v2", "Swimmer-v2"])
     parser.add_argument(
-        "--nb_runs",
-        type=int,
-        default=1,
-        help="Number of run time"
-    )
-    parser.add_argument(
         "--noise",
         type=float,
         default=0,

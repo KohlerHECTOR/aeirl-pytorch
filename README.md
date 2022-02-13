@@ -1,6 +1,6 @@
 # Auto-Encoding Inverse Reinforcement Learning with PyTorch
 
-This repository is for a simple implementation of Auto-Encoding Inverse Reinforcement Learning (AEIRL) with PyTorch and allows for comparison with GAIL and rerpoduction of results from the original AEIRL paper [link](https://openreview.net/pdf?id=OCgCYv7KGZe). This implementation is based on this GAIL ([link](https://github.com/hcnoh/gail-pytorch)) implementation
+This repository is for a simple implementation of Auto-Encoding Inverse Reinforcement Learning (AEIRL) with PyTorch and allows for comparison with GAIL and reproduction of results from the original AEIRL paper [link](https://openreview.net/pdf?id=OCgCYv7KGZe). This implementation is based on this GAIL ([link](https://github.com/hcnoh/gail-pytorch)) implementation
 
 *Note*: The environment's names could be different depending on the version of OpenAI Gym.
 
@@ -19,7 +19,7 @@ This repository is for a simple implementation of Auto-Encoding Inverse Reinforc
 1. Execute training process by `train_aeirl.py` or `train_gail.py`. An example of usage for `train_aeirl.py` are following:
 
     ```bash
-    $ python train_aeirl.py --env_name Hopper-v2 --noise 0 --nb_runs 1
+    $ python train_aeirl.py --env_name Hopper-v2 --noise 0
     ```
 ## Launch a comparison experiment between GAIL and AEIRL
 1. Excecute both training processes:
