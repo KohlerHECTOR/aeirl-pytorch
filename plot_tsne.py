@@ -149,7 +149,7 @@ def plot_tsne(tsne_perp_data, tsne_perp_data2, tsne_perp_data3, tsne_perp_data4,
         plt.scatter(tsne_perp_data4[i][5000:-1,0],tsne_perp_data4[i][5000:-1,1], c=np.where(color4==0,expert_color, gail_color)[5000:-1], s=np.where(color4==0,scatter_size, scatter_size)[5000:-1], alpha=np.where(color4==0,1, 1)[5000:-1])
         plt.scatter(tsne_perp_data4[i][-1:,0],tsne_perp_data4[i][-1:,1], c=gail_color, label="GAIL Sample")
 
-    plt.savefig('tsne.pdf')
+    plt.savefig(f"plots/tsne-{args.env_name}.pdf")
     plt.show()
     
 def get_data(model, noisy):
@@ -165,9 +165,9 @@ def get_data(model, noisy):
 
     list_name = [model+' non noisy', model+' noisy']
 
-    path_non_noisy = f"final_policies/{args.env_name[:-3]}/{model}_policy_0_.ckpt"
+    path_non_noisy = f"final_policies/{args.env_name}/{model}_policy_0_.ckpt"
 
-    path_noisy = f"final_policies/{args.env_name[:-3]}/{model}_policy_0.3_.ckpt"
+    path_noisy = f"final_policies/{args.env_name}/{model}_policy_0.3_.ckpt"
 
     if noisy:
         noisy = "_0.3_"
@@ -177,12 +177,12 @@ def get_data(model, noisy):
         model = AEIRL
         reward_model = AE
         reward_net = reward_model(state_dim, action_dim, False)
-        reward_net.load_state_dict(torch.load(f"final_reward_nets/{args.env_name[:-3]}/aeirl_autoencoder{noisy}.ckpt"))
+        reward_net.load_state_dict(torch.load(f"final_reward_nets/{args.env_name}/aeirl_autoencoder{noisy}.ckpt"))
     elif model=="gail":
         model = GAIL
         reward_model = Discriminator
         reward_net = reward_model(state_dim, action_dim, False)
-        reward_net.load_state_dict(torch.load(f"final_reward_nets/{args.env_name[:-3]}/gail_discriminator{noisy}.ckpt"))
+        reward_net.load_state_dict(torch.load(f"final_reward_nets/{args.env_name}/gail_discriminator{noisy}.ckpt"))
     else:
         print("Wrong model")
 
@@ -306,20 +306,6 @@ if __name__ == "__main__":
         type=str,
         default="Walker2d-v2",
         help="Type the environment name to run"
-    )
-    
-    parser.add_argument(
-        "--path-non-noisy",
-        type=str,
-        default=None,
-        help="Full path of the policy non noisy"
-    )
-
-    parser.add_argument(
-        "--path-noisy",
-        type=str,
-        default=None,
-        help="Full path of the policy noisy"
     )
 
     args = parser.parse_args()

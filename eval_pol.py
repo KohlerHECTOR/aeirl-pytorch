@@ -52,19 +52,17 @@ def main():
     if args.path_non_noisy != None:
         path_non_noisy = args.path_non_noisy
     else:
-        path_non_noisy = f"final_policies/{args.env_name[:-3]}/{args.model}_policy_0_.ckpt"
+        path_non_noisy = f"final_policies/{args.env_name}/{args.model}_policy_0_.ckpt"
     
     if args.path_noisy != None:
         path_noisy = args.path_noisy
     else:
-        path_noisy = f"final_policies/{args.env_name[:-3]}/{args.model}_policy_0.3_.ckpt"
+        path_noisy = f"final_policies/{args.env_name}/{args.model}_policy_0.3_.ckpt"
 
     if args.model=="aeirl":
         model = AEIRL
-        reward_model = AE
     elif args.model=="gail":
         model = GAIL
-        reward_model = Discriminator
     else:
         print("Wrong model")
         return 
