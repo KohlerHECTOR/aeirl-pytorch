@@ -43,7 +43,7 @@ Plots are saved in experiment/Hopper-v2-0-2022-02-12-02-50-05/plot
     $ python plot_tsne.py --env_name Hopper-v2
     ```
 Plots are saved in experiment/Hopper-v2-0-2022-02-12-02-50-05/plot
-![Hopper-v2](experiment/Hopper-v2-0-2022-02-12-02-50-05/plots/tsne-Hopper-v2.png)
+![Hopper-v2](plots/tsne-Hopper-v2.png)
     
 ## References
 - The original GAIL paper: [link](https://arxiv.org/abs/1606.03476)
