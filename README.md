@@ -42,7 +42,7 @@ Plots are saved in experiment/Hopper-v2-0-2022-02-12-02-50-05/plot
     ```bash
     $ python plot_tsne.py --env_name Hopper-v2
     ```
-Plots are saved in experiment/Hopper-v2-0-2022-02-12-02-50-05/plot
+Plots are saved in /plots
 ![Hopper-v2](plots/tsne-Hopper-v2.png)
     
 ## References
