@@ -7,9 +7,10 @@ import torch
 import gym
 
 import shutil
+
 from stable_baselines3 import PPO
 from models.nets import Expert
-from models.aeirl import AEIRL
+from models.gail import GAIL
 
 
 def main(env_name, path_save_log="default_save", simu_nb = None, noise = 0):
@@ -30,7 +31,7 @@ def main(env_name, path_save_log="default_save", simu_nb = None, noise = 0):
     if not os.path.isdir(ckpt_path):
         os.mkdir(ckpt_path)
 
-    # ["CartPole-v1", "Pendulum-v0", "BipedalWalker-v3", "Hopper-v2", "Swimmer-v2", "Walker2d-v2"]:
+    # if env_name not in ["CartPole-v1", "Pendulum-v0", "BipedalWalker-v3", "Hopper-v2", "Swimmer-v2", "Walker2d-v2"]:
     if env_name not in ["Hopper-v2", "Swimmer-v2", "Walker2d-v2", "Reacher-v2"]:
         print("The environment name is wrong!")
         return
@@ -74,33 +75,30 @@ def main(env_name, path_save_log="default_save", simu_nb = None, noise = 0):
             expert_config = json.load(f)
         expert = Expert(state_dim, action_dim, discrete,
                         **expert_config).to(device)
-        expert.pi.load_state_dict(
-            torch.load(
-                os.path.join(expert_ckpt_path, "policy.ckpt"), map_location=device
-            )
-        )
+        expert.pi.load_state_dict(torch.load(os.path.join(
+            expert_ckpt_path, "policy.ckpt"), map_location=device))
 
-    model = AEIRL(state_dim, action_dim, discrete, config,
-                  path_save_log=path_save_log).to(device)
+    model = GAIL(state_dim, action_dim, discrete, config,
+                 path_save_log=path_save_log).to(device)
 
     results = model.train(env, expert, noise = noise)
 
     env.close()
 
-    # with open(os.path.join(ckpt_path, "results.pkl"), "wb") as f:
+    # with open(os.path.join(ckpt_path, "gail_results.pkl"), "wb") as f:
     #     pickle.dump(results, f)
 
     if hasattr(model, "pi"):
         torch.save(
-            model.pi.state_dict(), os.path.join(ckpt_path, "aeirl_policy_"+ str(noise) + "_.ckpt")
+            model.pi.state_dict(), os.path.join(ckpt_path, "gail_policy_"+ str(noise) + "_.ckpt")
         )
     if hasattr(model, "v"):
         torch.save(
-            model.v.state_dict(), os.path.join(ckpt_path, "aeirl_value_"+ str(noise) + "_.ckpt")
+            model.v.state_dict(), os.path.join(ckpt_path, "gail_value_"+ str(noise) + "_.ckpt")
         )
     if hasattr(model, "d"):
         torch.save(
-            model.d.state_dict(), os.path.join(ckpt_path, "aeirl_autoencoder_"+ str(noise) + "_.ckpt")
+            model.d.state_dict(), os.path.join(ckpt_path, "gail_discriminator_"+ str(noise) + "_.ckpt")
         )
 
 
@@ -112,8 +110,10 @@ if __name__ == "__main__":
         default="Hopper-v2",
         help="Type the environment name to run. \
             The possible environments are \
-                [Hopper-v2, Swimmer-v2, Walker2d-v2,Reacher-v2]"  # "[CartPole-v1, Pendulum-v0, BipedalWalker-v3, Hopper-v2, Swimmer-v2, Walker2d-v2]"
+                [Hopper-v2, Swimmer-v2, Walker2d-v2]"  # "[CartPole-v1, Pendulum-v0, BipedalWalker-v3, Hopper-v2, Swimmer-v2, Walker2d-v2]"
     )
+    # parser.add_argument('--envs_mujoco', nargs='+',
+    #                     default=["Hopper-v2", "Swimmer-v2"])
     parser.add_argument(
         "--nb_runs",
         type=int,

@@ -4,7 +4,7 @@ import os
 import time
 from datetime import date
 
-from train import main as main_gail
+from train_gail import main as main_gail
 from train_aeirl import main as main_aeirl
 # from plot_from_log import main as plot
 
