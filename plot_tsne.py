@@ -12,6 +12,7 @@ import numpy as np
 import time
 from sklearn.manifold import TSNE
 import matplotlib.pyplot as plt
+import time
 
 if torch.cuda.is_available():
     from torch.cuda import FloatTensor
@@ -149,7 +150,7 @@ def plot_tsne(tsne_perp_data, tsne_perp_data2, tsne_perp_data3, tsne_perp_data4,
         plt.scatter(tsne_perp_data4[i][5000:-1,0],tsne_perp_data4[i][5000:-1,1], c=np.where(color4==0,expert_color, gail_color)[5000:-1], s=np.where(color4==0,scatter_size, scatter_size)[5000:-1], alpha=np.where(color4==0,1, 1)[5000:-1])
         plt.scatter(tsne_perp_data4[i][-1:,0],tsne_perp_data4[i][-1:,1], c=gail_color, label="GAIL Sample")
 
-    plt.savefig(f"plots/tsne-{args.env_name}.pdf")
+    plt.savefig(f"plots/tsne-{args.env_name}-{time.time()}.pdf")
     plt.show()
     
 def get_data(model, noisy):
