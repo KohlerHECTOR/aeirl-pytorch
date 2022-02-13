@@ -61,8 +61,10 @@ def main():
 
     if args.model=="aeirl":
         model = AEIRL
+        reward_model = AE
     elif args.model=="gail":
         model = GAIL
+        reward_model = Discriminator
     else:
         print("Wrong model")
         return 
