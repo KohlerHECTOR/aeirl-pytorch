@@ -72,7 +72,7 @@ class AEIRL(Module):
 
                 if done:
                     break
-            print(reward)
+            #print(reward)
             eval += reward
 
         print("EVAL REWARD : {}".format(eval/nb_eval))

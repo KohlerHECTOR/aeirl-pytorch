@@ -41,7 +41,7 @@ def main(env_name, nb_runs, noise):
 
     print("End Training phase")
     print("Plot...")
-    plot(env_name, path_save_exp)
+    plot(env_name, path_save_exp, noise = noise)
 
     print("Plot saved")
 
