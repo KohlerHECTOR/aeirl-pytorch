@@ -115,7 +115,6 @@ if __name__ == "__main__":
                 [Hopper-v2, Swimmer-v2, Walker2d-v2,Reacher-v2]"  # "[CartPole-v1, Pendulum-v0, BipedalWalker-v3, Hopper-v2, Swimmer-v2, Walker2d-v2]"
     )
     
-    )
     parser.add_argument(
         "--noise",
         type=float,
