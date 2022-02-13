@@ -37,6 +37,14 @@ Data are saved in .txt files in the experiment/ folder .
 Plots are saved in experiment/Hopper-v2-0-2022-02-12-02-50-05/plot
 ![Hopper-v2](experiment/Hopper-v2-0-2022-02-12-02-50-05/plot/all_reward_evolution_Hopper-v2.png)
 
+3. Plot t-sne results:
+
+    ```bash
+    $ python plot_tsne.py --env_name Hopper-v2
+    ```
+Plots are saved in /plots
+![Hopper-v2](plots/tsne-Hopper-v2.png)
+    
 ## References
 - The original GAIL paper: [link](https://arxiv.org/abs/1606.03476)
 - AEIRL paper on OpenReview: [link](https://openreview.net/pdf?id=OCgCYv7KGZe)
