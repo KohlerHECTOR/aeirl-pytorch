@@ -2,3 +2,5 @@ jupyter
 matplotlib
 numpy
 gym
+torch
+scipy

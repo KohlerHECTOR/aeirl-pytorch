@@ -6,7 +6,7 @@ from datetime import date
 
 from train import main as main_gail
 from train_aeirl import main as main_aeirl
-from plot_from_log import main as plot
+# from plot_from_log import main as plot
 
 from torch import manual_seed
 
@@ -40,12 +40,12 @@ def main(env_name, nb_runs, noise):
         main_gail(env_name, path_save_log=path_save_log,  simu_nb = i, noise = noise)
 
     print("End Training phase")
-    print("Plot...")
-    plot(env_name, path_save_exp)
-
-    print("Plot saved")
-
-    print("End.")
+    # print("Plot...")
+    # plot(env_name, path_save_exp)
+    #
+    # print("Plot saved")
+    #
+    # print("End.")
 
 
 if __name__ == "__main__":
